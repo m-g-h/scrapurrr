@@ -12,10 +12,14 @@ LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tibble
 Config/testthat/edition: 3
 Imports: 
     crayon,
     cli,
     magrittr,
-    R.utils
+    R.utils,
+    purrr,
+    dplyr,
+    rvest

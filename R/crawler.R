@@ -41,13 +41,16 @@ messagefun = function(n, N, object){
 #' @param func \code{function} Function to execute
 #' @param timeout \code{numeric scalar} Seconds until function is considered to
 #' be timed out
+#' @param attempts \code{numeric scalar} Number of attempts to try the function
 #' @param ... \code{further arguments to function}
+#' @param print_status_message \code{Logical scalar} indicating whether status
+#' messages should be printed
 #'
 #' @return Returns either a \code{try-error} or the function result
 #' @export
 #'
 #' @importFrom R.utils withTimeout
-#' @importFrom crayon green
+#' @importFrom crayon green red
 #'
 #' @examples
 #'
@@ -61,16 +64,18 @@ messagefun = function(n, N, object){
 #' try_and_timeout(mean, "error")
 
 try_and_timeout <- function(func, ...,
-                            timeout = 15){
+                            timeout = 15,
+                            attempts = 3,
+                            print_status_message = T){
   # Setup while loop
   res <- character()
   class(res) <- "try-error"
   n_try <- 0
 
-  while ("try-error" %in% class(res)) {
+  while ("try-error" %in% class(res) & n_try <= attempts) {
     n_try <- n_try + 1
     # Message if there are retry attempts
-    if(n_try > 1 ){
+    if(n_try > 1 & print_status_message){
       message("Retry, attempt ", n_try)
     }
     # Try attempt
@@ -78,14 +83,98 @@ try_and_timeout <- function(func, ...,
       withTimeout({
         func(...)
       },timeout = timeout,
-      onTimeout = "warning")
-    })
+      onTimeout = "silent")
+    },silent = T)
 
     # Success message
-    if(!("try-error" %in% class(res)) & n_try>1){
-      message(green("Success!"))
+    if(!("try-error" %in% class(res)) & n_try == 1){
+      return(res)
+    } else if(!("try-error" %in% class(res)) & n_try>1){
+      if(print_status_message){message(green("Success!"))}
+      return(res)
+    } else if (("try-error" %in% class(res)) & n_try == attempts){
+      funcname = deparse(substitute(func))
+      if(print_status_message){message(red(paste0(" Extraction failed. Returned error message in results")))}
+      return(res)
     }
-
-    return(res)
   }# End of while loop
+}
+
+#' Scrape content of objects using a specified function. Supports timeouts and
+#' error handling.
+#'
+#' @param .func \code{function} A function that returns a list with named
+#' entries
+#' @param ... arguments to the function, e.g. a list of links to scrape from
+#' @param timeout \code{numeric scalar} Number of second to wait before the call to
+#' .func is considered failed
+#' @param print_status_messages \code{Logical scalar} indicating whether status
+#' messages should be printed
+#'
+#' @return Returns a \code{tibble}
+#' @export
+#'
+#' @importFrom crayon green
+#' @importFrom purrr pmap_dfr
+#' @import dplyr
+#'
+#' @examples
+#'
+#' library(magrittr)
+#' library(rvest)
+#' library(webscraping)
+#'
+#' # List of pagesto scrape
+#' links = list("https://de.wikipedia.org/wiki/Bayern",
+#'              "https://de.wikipedia.org/wiki/Berlin",
+#'              "https://de.wikipedia.org/wiki/Brandenburg")
+#'
+#' # Web scraping function
+#' scrapefun = function(link){
+#'   title = read_html(link) %>%
+#'     html_elements("h1") %>%
+#'     html_text()
+#'  list("title" = title)
+#' }
+#'
+#' do_scrape(scrapefun,links)
+
+do_scrape = function(.func,
+                     ...,
+                     timeout = 15,
+                     print_status_messages = T){
+
+  # Function that is used inside map to loop over all objects in ...
+  mapfun <- function(..., n, N){
+    inner_dots = list(...)
+    # Status message
+    if(print_status_messages){
+      messagefun(n, N, inner_dots[[1]])
+    }
+    # Try to evaluate the function with timeout
+    res <- try_and_timeout(.func, ...,
+                           timeout = timeout,
+                           print_status_message = print_status_messages)
+
+    if(n == N & print_status_messages){
+      message(green("Finished"))
+    }
+    # Return result
+    if(class(res) %in% "try-error"){
+      list("error" = res[1])
+    } else {
+      res
+    }
+  }
+
+  # Capture args
+  dots = list(...)
+  N = length(dots[[1]])
+  dots$n = 1:length(dots[[1]])
+
+  # Evaluate all objects
+  pmap_dfr(.l = dots,
+           mapfun,
+           N = N)
+
 }

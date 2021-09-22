@@ -4,7 +4,13 @@
 \alias{try_and_timeout}
 \title{Executes a function and gives a try-error if it fails or times out}
 \usage{
-try_and_timeout(func, ..., timeout = 15)
+try_and_timeout(
+  func,
+  ...,
+  timeout = 15,
+  attempts = 3,
+  print_status_message = T
+)
 }
 \arguments{
 \item{func}{\code{function} Function to execute}
@@ -13,6 +19,11 @@ try_and_timeout(func, ..., timeout = 15)
 
 \item{timeout}{\code{numeric scalar} Seconds until function is considered to
 be timed out}
+
+\item{attempts}{\code{numeric scalar} Number of attempts to try the function}
+
+\item{print_status_message}{\code{Logical scalar} indicating whether status
+messages should be printed}
 }
 \value{
 Returns either a \code{try-error} or the function result
