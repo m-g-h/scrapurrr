@@ -35,3 +35,57 @@ messagefun = function(n, N, object){
   )
 }
 
+
+#' Executes a function and gives a try-error if it fails or times out
+#'
+#' @param func \code{function} Function to execute
+#' @param timeout \code{numeric scalar} Seconds until function is considered to
+#' be timed out
+#' @param ... \code{further arguments to function}
+#'
+#' @return Returns either a \code{try-error} or the function result
+#' @export
+#'
+#' @importFrom R.utils withTimeout
+#' @importFrom crayon green
+#'
+#' @examples
+#'
+#' # Works
+#' try_and_timeout(mean, 1:100)
+#'
+#' # Returns try-error because of timeout
+#' try_and_timeout(Sys.sleep, 0.2, timeout = 0.1)
+#'
+#' # Returns error because of wrong argument
+#' try_and_timeout(mean, "error")
+
+try_and_timeout <- function(func, ...,
+                            timeout = 15){
+  # Setup while loop
+  res <- character()
+  class(res) <- "try-error"
+  n_try <- 0
+
+  while ("try-error" %in% class(res)) {
+    n_try <- n_try + 1
+    # Message if there are retry attempts
+    if(n_try > 1 ){
+      message("Retry, attempt ", n_try)
+    }
+    # Try attempt
+    res <- try({
+      withTimeout({
+        func(...)
+      },timeout = timeout,
+      onTimeout = "warning")
+    })
+
+    # Success message
+    if(!("try-error" %in% class(res)) & n_try>1){
+      message(green("Success!"))
+    }
+
+    return(res)
+  }# End of while loop
+}

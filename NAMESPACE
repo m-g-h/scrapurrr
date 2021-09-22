@@ -2,7 +2,10 @@
 
 export("%>%")
 export(messagefun)
+export(try_and_timeout)
+importFrom(R.utils,withTimeout)
 importFrom(cli,console_width)
 importFrom(crayon,blue)
+importFrom(crayon,green)
 importFrom(crayon,white)
 importFrom(magrittr,"%>%")
