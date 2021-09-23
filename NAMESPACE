@@ -3,6 +3,7 @@
 export("%>%")
 export(do_scrape)
 export(messagefun)
+export(return_named_list)
 export(try_and_timeout)
 import(dplyr)
 importFrom(R.utils,withTimeout)
