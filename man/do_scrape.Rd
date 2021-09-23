@@ -32,7 +32,7 @@ library(magrittr)
 library(rvest)
 library(webscraping)
 
-# List of pagesto scrape
+# List of pages to scrape
 links = list("https://de.wikipedia.org/wiki/Bayern",
              "https://de.wikipedia.org/wiki/Berlin",
              "https://de.wikipedia.org/wiki/Brandenburg")

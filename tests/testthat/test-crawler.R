@@ -1,10 +1,10 @@
 
 # messagefun() ------------------------------------------------------------
 
-
+# Should print simple status message
 test_that("messagefun() works", {
   expect_message(messagefun(1, 1000, "object"),
-                 regexp = "object")
+                 regexp = "1/1000. object")
 })
 
 # try_and_timeout() -------------------------------------------------------
@@ -12,18 +12,28 @@ test_that("messagefun() works", {
 
 test_that("try_and_timeout() works",{
 
-  expect_equal(try_and_timeout(mean, 1:100),
-               50.5)
-
-  errorfun = function(x){
-    stop("error")
+  meanfun = function(x){
+    list("mean" = mean(x))
   }
 
-  # Error error
+  # This should work without error
+  expect_equal(try_and_timeout(meanfun, 1:100),
+               list("mean" = 50.5))
+
+  # This should trigger 3 retry attempts and then give an error message
+  errorfun = function(x){
+    stop("error message")
+  }
+
+  # Error Messages
   expect_message(try_and_timeout(errorfun, attempts = 3),
                  "Retry, attempt 2") %>%
     expect_message("Retry, attempt 3") %>%
     expect_message("Extraction failed. Returned error message in results")
+
+  # Expect that it returns the error message
+  expect_equal(try_and_timeout(errorfun, attempts = 3,print_status_message = F),
+               list("error" = "Error in func(...) : error message\n"))
 
 })
 
@@ -34,9 +44,6 @@ test_that("do_scrape() works",{
 
   files = list.files("do_scrape_files",
                      full.names = T)
-
-
-
 
   # Scraping using a function and a list of files
   scrapefun = function(file){
@@ -54,14 +61,14 @@ test_that("do_scrape() works",{
                                         "Baden-Württemberg",
                                         "Bayern")))
 
-  # Messages on
+  # Expect status messages
   expect_message(do_scrape(scrapefun, files),
                  regexp = "1/3") %>%
     expect_message(regexp = "2/3") %>%
     expect_message(regexp = "3/3") %>%
     expect_message(regexp = "Finished")
 
-  # Scraping using a function and a list of files + a list of indices
+  # Scraping using a function that takes two list arguments
   scrapefun2 = function(file,index){
     title = rvest::read_html(file) %>%
       rvest::html_elements("h1") %>%
@@ -91,9 +98,41 @@ test_that("do_scrape() works",{
     list("res" = res)
 
   }
+  # Expect status + error messages
+  expect_message(do_scrape(scrapefun3, c(1, "two", 3), print_status_messages = T),
+                 "1/3. 1") %>%
+    expect_message("2/3. two") %>%
+    expect_message("Retry, attempt 2") %>%
+    expect_message("Retry, attempt 3") %>%
+    expect_message("Extraction failed. Returned error message in results") %>%
+    expect_message("3/3. 3") %>%
+    expect_message("Finished")
 
+  # Expect the error message in the output
   expect_equal(do_scrape(scrapefun3, c(1, "two", 3), print_status_messages = F),
                tibble::tibble(res = c("1", NA, "3"),
                               error = c(NA, "Error in func(...) : error\n" , NA)))
 
+
+})
+
+test_that("do_scrape() works online", {
+  skip_if_offline()
+
+  links = list("https://de.wikipedia.org/wiki/Bayern",
+               "https://de.wikipedia.org/wiki/Berlin",
+               "https://de.wikipedia.org/wiki/Brandenburg")
+
+  # Web scraping function
+  scrapefun = function(link){
+    title = rvest::read_html(link) %>%
+      rvest::html_elements("h1") %>%
+      rvest::html_text()
+   list("title" = title)
+  }
+
+  expect_equal(do_scrape(scrapefun,links, print_status_messages = F),
+               tibble(title = c("Bayern",
+                                "Berlin",
+                                "Brandenburg")))
 })

@@ -35,7 +35,6 @@ messagefun = function(n, N, object){
   )
 }
 
-
 #' Executes a function and gives a try-error if it fails or times out
 #'
 #' @param func \code{function} Function to execute
@@ -86,16 +85,17 @@ try_and_timeout <- function(func, ...,
       onTimeout = "silent")
     },silent = T)
 
-    # Success message
+    # Return silently if successful
     if(!("try-error" %in% class(res)) & n_try == 1){
       return(res)
+      # Return with success message if there were retry attempts
     } else if(!("try-error" %in% class(res)) & n_try>1){
       if(print_status_message){message(green("Success!"))}
       return(res)
+      # Return error if retries failed
     } else if (("try-error" %in% class(res)) & n_try == attempts){
-      funcname = deparse(substitute(func))
       if(print_status_message){message(red(paste0(" Extraction failed. Returned error message in results")))}
-      return(res)
+      return(list("error" = as.character(res)))
     }
   }# End of while loop
 }
@@ -124,7 +124,7 @@ try_and_timeout <- function(func, ...,
 #' library(rvest)
 #' library(webscraping)
 #'
-#' # List of pagesto scrape
+#' # List of pages to scrape
 #' links = list("https://de.wikipedia.org/wiki/Bayern",
 #'              "https://de.wikipedia.org/wiki/Berlin",
 #'              "https://de.wikipedia.org/wiki/Brandenburg")
@@ -156,15 +156,19 @@ do_scrape = function(.func,
                            timeout = timeout,
                            print_status_message = print_status_messages)
 
+    # Throw error if no named list is returned
+    if(!is.list(res) & is.null(names(res))){
+      funcname = deparse(substitute(.func))
+      stop(paste0("The scraping function`",
+                  funcname,
+                  "`did not return a named list."))
+    }
+
     if(n == N & print_status_messages){
       message(green("Finished"))
     }
     # Return result
-    if(class(res) %in% "try-error"){
-      list("error" = res[1])
-    } else {
-      res
-    }
+    res
   }
 
   # Capture args
