@@ -5,7 +5,7 @@
 \title{Scrape content of objects using a specified function. Supports timeouts and
 error handling.}
 \usage{
-do_scrape(.func, ..., timeout = 15, print_status_messages = T)
+do_scrape(.func, ..., timeout = 15, attempts = 3, print_status_message = T)
 }
 \arguments{
 \item{.func}{\code{function} A function that returns a list with named
@@ -13,10 +13,12 @@ entries}
 
 \item{...}{arguments to the function, e.g. a list of links to scrape from}
 
-\item{timeout}{\code{numeric scalar} Number of second to wait before the call to
-.func is considered failed}
+\item{timeout}{\code{numeric scalar} Seconds until function is considered to
+be timed out}
 
-\item{print_status_messages}{\code{Logical scalar} indicating whether status
+\item{attempts}{\code{numeric scalar} Number of attempts to try the function}
+
+\item{print_status_message}{\code{Logical scalar} indicating whether status
 messages should be printed}
 }
 \value{

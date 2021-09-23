@@ -106,10 +106,7 @@ try_and_timeout <- function(func, ...,
 #' @param .func \code{function} A function that returns a list with named
 #' entries
 #' @param ... arguments to the function, e.g. a list of links to scrape from
-#' @param timeout \code{numeric scalar} Number of second to wait before the call to
-#' .func is considered failed
-#' @param print_status_messages \code{Logical scalar} indicating whether status
-#' messages should be printed
+#' @inheritParams try_and_timeout
 #'
 #' @return Returns a \code{tibble}
 #' @export
@@ -142,19 +139,21 @@ try_and_timeout <- function(func, ...,
 do_scrape = function(.func,
                      ...,
                      timeout = 15,
-                     print_status_messages = T){
+                     attempts = 3,
+                     print_status_message = T){
 
   # Function that is used inside map to loop over all objects in ...
   mapfun <- function(..., n, N){
     inner_dots = list(...)
     # Status message
-    if(print_status_messages){
+    if(print_status_message){
       messagefun(n, N, inner_dots[[1]])
     }
     # Try to evaluate the function with timeout
     res <- try_and_timeout(.func, ...,
                            timeout = timeout,
-                           print_status_message = print_status_messages)
+                           attempts = attempts,
+                           print_status_message = print_status_message)
 
     # Throw error if no named list is returned
     if(!is.list(res) & is.null(names(res))){
@@ -164,10 +163,11 @@ do_scrape = function(.func,
                   "`did not return a named list."))
     }
 
-    if(n == N & print_status_messages){
+    if(n == N & print_status_message){
       message(green("Finished"))
     }
     # Return result
+    res$id = n
     res
   }
 

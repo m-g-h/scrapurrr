@@ -12,8 +12,11 @@ LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
-    tibble
+    tibble,
+    tidyverse
 Config/testthat/edition: 3
 Imports: 
     crayon,
@@ -23,3 +26,4 @@ Imports:
     purrr,
     dplyr,
     rvest
+VignetteBuilder: knitr

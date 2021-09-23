@@ -1,0 +1,145 @@
+---
+title: "How To"
+subtitle: "Introduction to the workflow and functionality of `webscraping`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How To}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(webscraping)
+```
+This package is designed to provide tools for automating repetitive and/or challenging tasks of webscraping. Implementing the webscraping functionality itself is left to the user. In order to provide some guidance how to do that, this section introduces some basic concepts using the package `rvest` ([website](https://rvest.tidyverse.org/)) and the popular `tidyverse` as data wrangling backend.
+
+**Contents:**
+
+- Manual Workflow: Scraping a Single Page
+- Automated Workflow 1: Scraping Multiple Pages with `do_scrape()`
+- Functionality of `do_scrape()`
+- Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)
+- Some Useful Functions for extraction
+- Overcoming Webscraping Obstacles
+  - Dealing with request limits using timing and proxies
+  - Downloading dynamically generated content / `javascript` rendered pages
+  - Extracting `javascript` obfuscated data in `R` with `V8`
+
+## Scraping a Single Page
+
+Suppose we need to know the capital city of Bavaria. This info is easily available, e.g. on [wikipedia](https://en.wikipedia.org/wiki/Bavaria). Using `rvest` we can download the page `html` and extract the information:
+
+```{r message=FALSE, warning=FALSE}
+
+library(rvest)
+library(tidyverse)
+
+# Download the html of "https://en.wikipedia.org/wiki/Bavaria"
+page = read_html("https://en.wikipedia.org/wiki/Bavaria")
+
+# Extract name of country
+page %>% 
+  html_element("hcapture the download1") %>% 
+  html_text()
+
+# Extract capital city
+page %>% 
+  html_element("table.infobox") %>% 
+  html_table(header = F) %>% 
+  filter(str_detect(X1, "Capital")) %>% 
+  pull("X2")
+
+```
+
+## Automated Workflow 1: Scraping Multiple Pages with `do_scrape()`
+
+Usually one needs to scrape multiple pages. E.g. we could be interested in the capital cities of *each* of the 16 German states. The simple webscraping process implemented in this package is descrived in the following sections.
+
+### 1. Define the list of links from which data needs to be extracted
+
+```{r}
+# We could search the wikipedia links manually - or use webscraping:
+state_links = read_html("https://en.wikipedia.org/wiki/States_of_Germany") %>% 
+  html_element(".wikitable") %>% 
+  html_elements("tr> td:nth-child(3)") %>% 
+  html_elements("a") %>% 
+  html_attr("href") %>% 
+  paste0("https://en.wikipedia.org", .)
+
+glimpse(state_links)
+
+```
+
+### 3. Define a function capturing the repetitive webscraping tasks :
+
+The following function captures the complete webscraping task: downloading the `html` and extracting the relevant content. For use in the `do_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
+
+Sometimes there are more challenges, like dynamically created content that can't be downloaded via `rvest` or obfuscated data (e.g. e-mails). Ways to deal with these challenges are described in the section **Overcoming Webscraping Obstacles**
+
+```{r}
+
+get_capitals = function(link){
+  # Download the html of "https://en.wikipedia.org/wiki/Bavaria"
+  page = read_html(link)
+  
+  # Extract name of country
+  state = page %>% 
+    html_element("h1") %>% 
+    html_text()
+  
+  # Extract capital city
+  capital = page %>% 
+    html_element("table.infobox") %>% 
+    html_table(header = F) %>% 
+    filter(str_detect(X1, "Capital")) %>% 
+    pull("X2")
+  
+  # Return result s asnamed list
+  return(
+    list("State" = state,
+         "Capital" = capital)
+  )
+}
+
+```
+
+### 3. Apply the function to each link in the list
+For this purpose, `webscraper` offers the `do_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some webscraping-specific utilities. One is that it prints informative status messages to the console, which are useful for long scraping tasks (for further info see the section **Functionality of `do_scrape()`**. Let's use it for our search of capitals:
+```{r message=TRUE, warning=TRUE}
+library(webscraping)
+# Map the function to all state links and merge the results by row into a dataframe
+results = do_scrape(.func = get_capitals,
+                    state_links)
+
+# Print results
+glimpse(results)
+```
+
+## Functionality of `do_scrape()`
+
+`do_scrape()` is the central function of the webscraping workflow in this package. It is basically a wrapper around `pmap_dfr()` from `purrr` and behaves just like it. It also solves some webscraping specific tasks:
+
+**Status Messages**
+In really large scraping projects it can be useful to see how many objects have been processed, what object is currently being processed and how many there are in total. If the argument `print_status_message` is set to TRUE (default) such a message is printed for every object.
+
+**Error and Timeout handling**
+When scraping a large amount of pages, it can be frustrating to have an error after 70% of the process is completed. This can either happen because of a bug in the extraction function, or if there is an issue with your or the pages internet connection. In these cases, `do_scrape()` does not simply break, but retries to obtain the results. You can specify the amount of retries using the `attempts` argument. For problems with the internet connecion, instead of waiting an immense amount of time, `do_scrape()` fails after the amount of seconds specified using the `timeout` argument.
+
+If an error or timeout occurs, the output contains the error message and the position at which the error occured in the output.
+
+**Limit Request Frequency**
+sys.sleep
+
+**Proxy Rotation**
+experimental
+
+## Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)

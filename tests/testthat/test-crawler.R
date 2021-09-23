@@ -56,10 +56,11 @@ test_that("do_scrape() works",{
 
   }
 
-  expect_equal(do_scrape(scrapefun, files, print_status_messages = F),
+  expect_equal(do_scrape(scrapefun, files, print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
-                                        "Bayern")))
+                                        "Bayern"),
+                              id = 1:3))
 
   # Expect status messages
   expect_message(do_scrape(scrapefun, files),
@@ -80,11 +81,12 @@ test_that("do_scrape() works",{
 
   }
 
-  expect_equal(do_scrape(scrapefun2, files, 1:3, print_status_messages = F),
+  expect_equal(do_scrape(scrapefun2, files, 1:3, print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
                                         "Bayern"),
-                              index = 1:3))
+                              index = 1:3,
+                              id = 1:3))
 
   # What if scrapefun returns an error
   scrapefun3 = function(x){
@@ -99,7 +101,7 @@ test_that("do_scrape() works",{
 
   }
   # Expect status + error messages
-  expect_message(do_scrape(scrapefun3, c(1, "two", 3), print_status_messages = T),
+  expect_message(do_scrape(scrapefun3, c(1, "two", 3), print_status_message = T),
                  "1/3. 1") %>%
     expect_message("2/3. two") %>%
     expect_message("Retry, attempt 2") %>%
@@ -109,8 +111,9 @@ test_that("do_scrape() works",{
     expect_message("Finished")
 
   # Expect the error message in the output
-  expect_equal(do_scrape(scrapefun3, c(1, "two", 3), print_status_messages = F),
+  expect_equal(do_scrape(scrapefun3, c(1, "two", 3), print_status_message = F),
                tibble::tibble(res = c("1", NA, "3"),
+                              id = 1:3,
                               error = c(NA, "Error in func(...) : error\n" , NA)))
 
 
@@ -131,8 +134,9 @@ test_that("do_scrape() works online", {
    list("title" = title)
   }
 
-  expect_equal(do_scrape(scrapefun,links, print_status_messages = F),
+  expect_equal(do_scrape(scrapefun,links, print_status_message = F),
                tibble(title = c("Bayern",
                                 "Berlin",
-                                "Brandenburg")))
+                                "Brandenburg"),
+                      id = 1:3))
 })
