@@ -200,6 +200,84 @@ get_capitals = function(link){
 get_capitals("https://en.wikipedia.org/wiki/Bavaria")
 ```
 
+### `node_which()` and `html_find()`
+
+In the extraction step of webscraping one usually selects `nodes` using `css` or `XPath`, e.g. using the `rvest` packages `html_elements()`. However, sometimes these selectors are not enough. Consider the following `html`:
+
+```{html}
+<table>
+  <tr>
+    <th>Company</th>
+    <th>Contact</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Centro comercial Moctezuma</td>
+    <td>Francisco Chang</td>
+    <td>Mexico</td>
+  </tr>
+</table>
+```
+
+This table has the three columns "Company", "Contact" and "Country". Suppose we want to get the contact to "Alfreds Futterkiste". Simply selecting all `td` nodes and then matching positions might work:
+```{r include=FALSE}
+
+html = "<table>
+  <tr>
+    <th>Company</th>
+    <th>Contact</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Centro comercial Moctezuma</td>
+    <td>Francisco Chang</td>
+    <td>Mexico</td>
+  </tr>
+</table>" %>% 
+  xml2::read_html()
+
+```
+
+```{r}
+# I parsed the html into the object `html` in the background
+library(rvest)
+
+# Manual selection works
+html %>% 
+  html_elements("td") %>% 
+  .[2]
+
+# CSS selection by child position works:
+html %>% 
+  html_elements("tr:nth-child(2) > td:nth_child(2)")
+```
+
+But what if you have multiple tables and the position of the information (i.e. the row number) changes from table to table? This can be solved by `regex` selection of the text as implemented by `node_which()` and `html_find()`:
+
+```{r}
+library(webscraping)
+# Get the position of the "Contact" to "Alfreds Futterkiste"
+html %>% 
+  html_elements("td") %>% 
+  node_which("Alfreds Futterkiste", inc = 1)
+
+# Get the node of the "Contact" to "Alfreds Futterkiste"
+html %>% 
+  html_elements("td") %>% 
+  html_find("Alfreds Futterkiste", inc = 1)
+
+```
+Note that we use `inc = 1` in order to not select the `td` that contains "Alfreds Futterkiste", but the node that comes afterwards. In the context of a table this corresponds to the next column.
 
 ## Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)
 Sometimes it is neccessary to separate the download of `html` from the extraction. This can be the case when there is a request limit on the desired page and one can not endlessly trial-and-error until the extraction function works, or when the page is rendered dynamically. A third reason is reproducibility and documentation of the raw `html`. In these cases it makes sense to first download all pages into `html` files on the harddrive and then extract them in a second step.
