@@ -140,7 +140,7 @@ experimental
 
 ## Useful Helper Functions
 
-### `return_named_list()`
+### Easier Scraping Function Output via `return_named_list()`
 
 The extraction functions used in `do_scrape()` are supposed to return a named list. This allows to bind together multiple results row wise. Usually, this is implemented as:
 
@@ -200,7 +200,7 @@ get_capitals = function(link){
 get_capitals("https://en.wikipedia.org/wiki/Bavaria")
 ```
 
-### `node_which()` and `html_find()`
+### Extraction using Regex via `node_which()` and `html_find()`
 
 In the extraction step of webscraping one usually selects `nodes` using `css` or `XPath`, e.g. using the `rvest` packages `html_elements()`. However, sometimes these selectors are not enough. Consider the following `html`:
 
@@ -278,6 +278,12 @@ html %>%
 
 ```
 Note that we use `inc = 1` in order to not select the `td` that contains "Alfreds Futterkiste", but the node that comes afterwards. In the context of a table this corresponds to the next column.
+
+### Display Downloaded `html` and Pre-Testing via `view_html()`
+
+The convenience funtion `view_html()` allows to view what the computer sees. Either provide a link to a wepage or the `html` directly. 
+
+This is useful for **pretesting**, i.e. for checking what the computer gets (and what it doesn't get). By using `view_html()` you can quickly judge if you need a webdriver like `Selenium` or `PhantomJS` or if simple scraping methods, i.e, `rvest`are sufficient.
 
 ## Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)
 Sometimes it is neccessary to separate the download of `html` from the extraction. This can be the case when there is a request limit on the desired page and one can not endlessly trial-and-error until the extraction function works, or when the page is rendered dynamically. A third reason is reproducibility and documentation of the raw `html`. In these cases it makes sense to first download all pages into `html` files on the harddrive and then extract them in a second step.

@@ -137,3 +137,46 @@ node_which <- function(nodelist, regex, inc = 0) {
 html_find <- function(nodelist, regex, inc = 0) {
   nodelist[node_which(nodelist, regex, inc)]
 }
+
+#' Download html and/or display it in the RStudio Viewer / Browser
+#'
+#' @param link \code{string scala} (optional) Link to a webpage. It will be
+#' downloaded via \code{\link[xml2]{read_html}}.
+#' @param html \code{string scalar or html} containing the html to be displayed
+#'
+#' @return Opens the RStudio Viewer and displays the webpage or html
+#' @export
+#'
+#' @importFrom xml2 read_html
+#' @importFrom rstudioapi viewer
+#' @importFrom utils browseURL
+#'
+#' @examples
+#'
+#' # Using link to webpage:
+#' view_html("https://www.google.de")
+#'
+#' # Using downloaded html
+#' google = xml2::read_html("https://www.google.de")
+#' view_html(html = google)
+#'
+view_html = function(link = NULL, html = NULL){
+
+  # Get html using xml2 read_html if none is provided
+  if(is.null(html)){
+    html = read_html(link)
+  }
+
+  html = as.character(html)
+
+  # Create local temp file with html content
+  tempDir <- tempfile()
+  dir.create(tempDir)
+  htmlFile <- file.path(tempDir, "index.html")
+  writeLines(text = html,
+             con = htmlFile)
+
+  # Use RStudio Viewer to access file
+  viewer <- getOption("viewer", default = utils::browseURL)
+  viewer(htmlFile)
+}

@@ -16,8 +16,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
-    tidyverse,
-    xml2
+    tidyverse
 Config/testthat/edition: 3
 Imports: 
     crayon,
@@ -27,5 +26,7 @@ Imports:
     purrr,
     dplyr,
     rvest,
-    stringr
+    stringr,
+    xml2,
+    rstudioapi
 VignetteBuilder: knitr
