@@ -4,9 +4,15 @@
 \name{scrapurrr-package}
 \alias{scrapurrr}
 \alias{scrapurrr-package}
-\title{scrapurrr: What the Package Does (Title Case)}
+\title{scrapurrr: Functional Programming Style Webscraping à la purrr}
 \description{
-More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+This package offers a functional programming style framework for 
+    webscraping and useful tools and tutorials to overcome common webscraping 
+    challenges. Check out the vignettes for webscraping workflows and infos on 
+    how to write the webscraping logic for specific webscraping challenges.
+}
+\author{
+\strong{Maintainer}: Martin G. Haas \email{haasmartin@live.de}
+
 }
 \keyword{internal}

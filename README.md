@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# scrapurrr <img src="man/figures/hex_small.svg" align="right" />
+# `scrapurrr` <img src="man/figures/hex_small.svg" align="right" />
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -9,15 +9,17 @@
 ### Overview
 
 This package offers a functional programming style framework for
-scrapurrr and useful tools and tutorials to overcome common scrapurrr
-challenges.
+webscraping and useful tools and tutorials to overcome common
+webscraping challenges. Check out the vignettes for webscraping
+workflows and infos on how to write the webscraping logic for specific
+webscraping challenges.
 
 ### Solve common webscraping tasks in a `scrapefun()`
 
 ![](vignettes/scrapefun.svg)
 
 Write a taylor-made `scrapefun()` that solves the challenges of your
-specific scrapurrr task:
+specific webscraping task:
 
 -   Check if you need a webdriver or not using `view_html()`
 -   Use `rvest` or implement a webdriver like like `phantomjs` or
@@ -36,7 +38,7 @@ specific scrapurrr task:
 Step 1: define the list of `url`s or `html` files you want to scrape
 
 Step 2: define a flexible `scrapefun()` taylor-made to the specific
-scrapurrr challenge at hand
+`scrapurrr` challenge at hand
 
 Step 3: use `map_scrape()` to webscrape the entire list.
 
@@ -107,22 +109,22 @@ And then we can use `map_scrape()` to execute the task:
 ``` r
 results = map_scrape(state_links,
                     .f = get_state_capital)
-#> 2021-09-25 21:12:18 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
-#> 2021-09-25 21:12:19 2/16: https://en.wikipedia.org/wiki/Bavaria
-#> 2021-09-25 21:12:19 3/16: https://en.wikipedia.org/wiki/Berlin
-#> 2021-09-25 21:12:21 4/16: https://en.wikipedia.org/wiki/Brandenburg
-#> 2021-09-25 21:12:21 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
-#> 2021-09-25 21:12:22 6/16: https://en.wikipedia.org/wiki/Hamburg
-#> 2021-09-25 21:12:23 7/16: https://en.wikipedia.org/wiki/Hesse
-#> 2021-09-25 21:12:25 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
-#> 2021-09-25 21:12:26 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
-#> 2021-09-25 21:12:28 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
-#> 2021-09-25 21:12:28 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
-#> 2021-09-25 21:12:31 12/16: https://en.wikipedia.org/wiki/Saarland
-#> 2021-09-25 21:12:31 13/16: https://en.wikipedia.org/wiki/Saxony
-#> 2021-09-25 21:12:32 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
-#> 2021-09-25 21:12:35 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
-#> 2021-09-25 21:12:36 16/16: https://en.wikipedia.org/wiki/Thuringia
+#> 2021-09-25 21:22:58 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
+#> 2021-09-25 21:22:58 2/16: https://en.wikipedia.org/wiki/Bavaria
+#> 2021-09-25 21:22:58 3/16: https://en.wikipedia.org/wiki/Berlin
+#> 2021-09-25 21:22:58 4/16: https://en.wikipedia.org/wiki/Brandenburg
+#> 2021-09-25 21:22:59 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
+#> 2021-09-25 21:22:59 6/16: https://en.wikipedia.org/wiki/Hamburg
+#> 2021-09-25 21:22:59 7/16: https://en.wikipedia.org/wiki/Hesse
+#> 2021-09-25 21:22:59 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
+#> 2021-09-25 21:23:00 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
+#> 2021-09-25 21:23:00 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
+#> 2021-09-25 21:23:00 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
+#> 2021-09-25 21:23:00 12/16: https://en.wikipedia.org/wiki/Saarland
+#> 2021-09-25 21:23:00 13/16: https://en.wikipedia.org/wiki/Saxony
+#> 2021-09-25 21:23:01 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
+#> 2021-09-25 21:23:01 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
+#> 2021-09-25 21:23:01 16/16: https://en.wikipedia.org/wiki/Thuringia
 #> Finished
 
 head(results)

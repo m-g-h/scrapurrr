@@ -1,11 +1,16 @@
 Package: scrapurrr
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Functional Programming Style Webscraping à la purrr
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: 
+    person(given = "Martin G.",
+           family = "Haas",
+           role = c("aut", "cre"),
+           email = "haasmartin@live.de")
+Description: This package offers a functional programming style framework for 
+    webscraping and useful tools and tutorials to overcome common webscraping 
+    challenges. Check out the vignettes for webscraping workflows and infos on 
+    how to write the webscraping logic for specific webscraping challenges.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -30,4 +35,4 @@ Imports:
     xml2,
     rstudioapi,
     httr
-VignetteBuilder: knitr
+VignetteBuilder: knitr  
