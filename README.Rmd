@@ -8,19 +8,19 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  fig.path = "man/figures/README-"
 )
 ```
 
-# scrapurrr
+# scrapurrr <img src="man/figures/hex_small.svg" align="right" />
 
 <!-- badges: start -->
 <!-- badges: end -->
 
+### Overview
 This package offers a functional programming style framework for scrapurrr and useful tools and tutorials to overcome common scrapurrr challenges.
 
-### Solve common scrapurrr tasks in a `scrapefun()`
+### Solve common webscraping tasks in a `scrapefun()`
 ![](vignettes/scrapefun.svg)
 
 Write a taylor-made `scrapefun()` that solves the challenges of your specific scrapurrr task:
