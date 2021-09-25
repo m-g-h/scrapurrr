@@ -63,7 +63,7 @@ return_named_list <- function() {
 #'
 #' @examples
 #' library(rvest)
-#' library(webscraping)
+#' library(scrapurrr)
 #'
 #' # Lets suppose we want to know the owner of "Alfreds Futterkiste":
 #' html = "<table>
@@ -106,7 +106,7 @@ node_which <- function(nodelist, regex, inc = 0) {
 #'
 #' @examples
 #' library(rvest)
-#' library(webscraping)
+#' library(scrapurrr)
 #'
 #' # Lets suppose we want to know the owner of "Alfreds Futterkiste":
 #' html = "<table>

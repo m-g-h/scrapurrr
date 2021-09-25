@@ -24,7 +24,7 @@ Find and return the node(s) in a \code{xml_nodeset} that match a regex pattern
 }
 \examples{
 library(rvest)
-library(webscraping)
+library(scrapurrr)
 
 # Lets suppose we want to know the owner of "Alfreds Futterkiste":
 html = "<table>

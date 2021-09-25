@@ -1,4 +1,4 @@
 library(testthat)
-library(webscraping)
+library(scrapurrr)
 
-test_check("webscraping")
+test_check("scrapurrr")

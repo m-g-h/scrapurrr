@@ -3,7 +3,7 @@
 \name{map_scrape}
 \alias{map_scrape}
 \title{Apply a function to each element in a list or atomic vector. Specialised for
-webscraping}
+scrapurrr}
 \usage{
 map_scrape(..., .f, timeout = 15, attempts = 3, print_status_message = T)
 }
@@ -37,7 +37,7 @@ cases, the error message is returned as \code{character} in the output.
 \examples{
 library(magrittr)
 library(rvest)
-library(webscraping)
+library(scrapurrr)
 
 # List of pages to scrape
 links = list("https://de.wikipedia.org/wiki/Bayern",

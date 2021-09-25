@@ -1,6 +1,6 @@
 ---
 title: "How To"
-subtitle: "Introduction to the workflow and functionality of `webscraping`"
+subtitle: "Introduction to the workflow and functionality of `scrapurrr`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How To}
@@ -18,9 +18,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(webscraping)
+library(scrapurrr)
 ```
-This package is designed to provide tools for automating repetitive and/or challenging tasks of webscraping. Implementing the webscraping functionality itself is left to the user. In order to provide some guidance how to do that, this section introduces some basic concepts using the package `rvest` ([website](https://rvest.tidyverse.org/)) and the popular `tidyverse` as data wrangling backend.
+This package is designed to provide tools for automating repetitive and/or challenging tasks of scrapurrr. Implementing the scrapurrr functionality itself is left to the user. In order to provide some guidance how to do that, this section introduces some basic concepts using the package `rvest` ([website](https://rvest.tidyverse.org/)) and the popular `tidyverse` as data wrangling backend.
 
 **Contents:**
 
@@ -61,12 +61,12 @@ page %>%
 
 ## Automated Workflow 1: Scraping Multiple Pages with `map_scrape()`
 
-Usually one needs to scrape multiple pages. E.g. we could be interested in the capital cities of *each* of the 16 German states. The simple webscraping process implemented in this package is descrived in the following sections.
+Usually one needs to scrape multiple pages. E.g. we could be interested in the capital cities of *each* of the 16 German states. The simple scrapurrr process implemented in this package is descrived in the following sections.
 
 ### 1. Define the list of links from which data needs to be extracted
 
 ```{r}
-# We could search the wikipedia links manually - or use webscraping:
+# We could search the wikipedia links manually - or use scrapurrr:
 state_links = read_html("https://en.wikipedia.org/wiki/States_of_Germany") %>% 
   html_element(".wikitable") %>% 
   html_elements("tr> td:nth-child(3)") %>% 
@@ -78,9 +78,9 @@ glimpse(state_links)
 
 ```
 
-### 3. Define an **extraction function** capturing the repetitive webscraping tasks :
+### 3. Define an **extraction function** capturing the repetitive scrapurrr tasks :
 
-The following function captures the complete webscraping task: downloading the `html` and extracting the relevant content. For use in the `map_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
+The following function captures the complete scrapurrr task: downloading the `html` and extracting the relevant content. For use in the `map_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
 
 Sometimes there are more challenges, like dynamically created content that can't be downloaded via `rvest` or obfuscated data (e.g. e-mails). Ways to deal with these challenges are described in the section **Overcoming Webscraping Obstacles**
 
@@ -109,9 +109,9 @@ get_capitals = function(link){
 ```
 
 ### 3. Apply the function to each link in the list
-For this purpose, `webscraper` offers the `map_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some webscraping-specific utilities. One is that it prints informative status messages to the console, which are useful for long scraping tasks (for further info see the section **Functionality of `map_scrape()`**. Let's use it for our search of capitals:
+For this purpose, `webscraper` offers the `map_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some scrapurrr-specific utilities. One is that it prints informative status messages to the console, which are useful for long scraping tasks (for further info see the section **Functionality of `map_scrape()`**. Let's use it for our search of capitals:
 ```{r message=TRUE, warning=TRUE}
-library(webscraping)
+library(scrapurrr)
 # Map the function to all state links and merge the results by row into a dataframe
 results = map_scrape(.f = get_capitals,
                     state_links)
@@ -122,7 +122,7 @@ glimpse(results)
 
 ## Functionality of `map_scrape()`
 
-`map_scrape()` is the central function of the webscraping workflow in this package. It is basically a wrapper around `pmap_dfr()` from `purrr` and behaves just like it. It also solves some webscraping specific tasks:
+`map_scrape()` is the central function of the scrapurrr workflow in this package. It is basically a wrapper around `pmap_dfr()` from `purrr` and behaves just like it. It also solves some scrapurrr specific tasks:
 
 **Status Messages**
 In really large scraping projects it can be useful to see how many objects have been processed, what object is currently being processed and how many there are in total. If the argument `print_status_message` is set to TRUE (default) such a message is printed for every object.
@@ -202,7 +202,7 @@ get_capitals("https://en.wikipedia.org/wiki/Bavaria")
 
 ### Extraction using Regex via `node_which()` and `html_find()`
 
-In the extraction step of webscraping one usually selects `nodes` using `css` or `XPath`, e.g. using the `rvest` packages `html_elements()`. However, sometimes these selectors are not enough. Consider the following `html`:
+In the extraction step of scrapurrr one usually selects `nodes` using `css` or `XPath`, e.g. using the `rvest` packages `html_elements()`. However, sometimes these selectors are not enough. Consider the following `html`:
 
 ```{html}
 <table>
@@ -265,7 +265,7 @@ html %>%
 But what if you have multiple tables and the position of the information (i.e. the row number) changes from table to table? This can be solved by `regex` selection of the text as implemented by `node_which()` and `html_find()`:
 
 ```{r}
-library(webscraping)
+library(scrapurrr)
 # Get the position of the "Contact" to "Alfreds Futterkiste"
 html %>% 
   html_elements("td") %>% 

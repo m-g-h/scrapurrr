@@ -1,21 +1,21 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# webscraping
+# scrapurrr
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 This package offers a functional programming style framework for
-webscraping and useful tools and tutorials to overcome common
-webscraping challenges.
+scrapurrr and useful tools and tutorials to overcome common
+scrapurrr challenges.
 
-### Solve common webscraping tasks in a `scrapefun()`
+### Solve common scrapurrr tasks in a `scrapefun()`
 
 ![](vignettes/scrapefun.svg)
 
 Write a taylor-made `scrapefun()` that solves the challenges of your
-specific webscraping task:
+specific scrapurrr task:
 
 -   Check if you need a webdriver or not using `view_html()`
 -   Use `rvest` or implement a webdriver like like `phantomjs` or
@@ -34,7 +34,7 @@ specific webscraping task:
 Step 1: define the list of `url`s or `html` files you want to scrape
 
 Step 2: define a flexible `scrapefun()` taylor-made to the specific
-webscraping challenge at hand
+scrapurrr challenge at hand
 
 Step 3: use `map_scrape()` to webscrape the entire list.
 
@@ -44,7 +44,7 @@ Generate list of links to scrape. In this example we scrape the
 Wikipedia pages of all German federal states:
 
 ``` r
-library(webscraping)
+library(scrapurrr)
 library(rvest)
 
 state_links = read_html("https://en.wikipedia.org/wiki/States_of_Germany") %>% 

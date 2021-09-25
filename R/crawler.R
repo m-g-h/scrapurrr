@@ -103,7 +103,7 @@ try_and_timeout <- function(.f, ...,
 }
 
 #' Apply a function to each element in a list or atomic vector. Specialised for
-#' webscraping
+#' scrapurrr
 #'
 #' This function automatically prints a status message for each object passed to
 #' \code{.f} using \code{\link{messagefun}}
@@ -126,7 +126,7 @@ try_and_timeout <- function(.f, ...,
 #' @examples
 #' library(magrittr)
 #' library(rvest)
-#' library(webscraping)
+#' library(scrapurrr)
 #'
 #' # List of pages to scrape
 #' links = list("https://de.wikipedia.org/wiki/Bayern",
