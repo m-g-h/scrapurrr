@@ -17,6 +17,7 @@ LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    covr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

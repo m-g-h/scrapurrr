@@ -12,9 +12,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-# `scrapurrr` <img src="man/figures/hex_small.svg" align="right" />
+# Webscraping in `R` with `scrapurrr` <img src="man/figures/hex_small.svg" align="right" />
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/m-g-h/scrapurrr/branch/master/graph/badge.svg)](https://codecov.io/gh/m-g-h/scrapurrr?branch=master)
 <!-- badges: end -->
 
 ### Overview
