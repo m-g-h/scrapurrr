@@ -7,6 +7,7 @@
 
 [![Codecov test
 coverage](https://codecov.io/gh/m-g-h/scrapurrr/branch/master/graph/badge.svg)](https://codecov.io/gh/m-g-h/scrapurrr?branch=master)
+[![R-CMD-check](https://github.com/m-g-h/scrapurrr/workflows/R-CMD-check/badge.svg)](https://github.com/m-g-h/scrapurrr/actions)
 <!-- badges: end -->
 
 ### Overview
@@ -119,22 +120,22 @@ And then we can use `map_scrape()` to execute the task:
 ``` r
 results = map_scrape(state_links,
                     .f = get_state_capital)
-#> 2021-09-25 21:47:11 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
-#> 2021-09-25 21:47:12 2/16: https://en.wikipedia.org/wiki/Bavaria
-#> 2021-09-25 21:47:12 3/16: https://en.wikipedia.org/wiki/Berlin
-#> 2021-09-25 21:47:12 4/16: https://en.wikipedia.org/wiki/Brandenburg
-#> 2021-09-25 21:47:12 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
-#> 2021-09-25 21:47:13 6/16: https://en.wikipedia.org/wiki/Hamburg
-#> 2021-09-25 21:47:13 7/16: https://en.wikipedia.org/wiki/Hesse
-#> 2021-09-25 21:47:13 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
-#> 2021-09-25 21:47:13 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
-#> 2021-09-25 21:47:14 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
-#> 2021-09-25 21:47:14 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
-#> 2021-09-25 21:47:14 12/16: https://en.wikipedia.org/wiki/Saarland
-#> 2021-09-25 21:47:14 13/16: https://en.wikipedia.org/wiki/Saxony
-#> 2021-09-25 21:47:14 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
-#> 2021-09-25 21:47:15 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
-#> 2021-09-25 21:47:16 16/16: https://en.wikipedia.org/wiki/Thuringia
+#> 2021-09-25 22:01:46 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
+#> 2021-09-25 22:01:46 2/16: https://en.wikipedia.org/wiki/Bavaria
+#> 2021-09-25 22:01:46 3/16: https://en.wikipedia.org/wiki/Berlin
+#> 2021-09-25 22:01:46 4/16: https://en.wikipedia.org/wiki/Brandenburg
+#> 2021-09-25 22:01:47 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
+#> 2021-09-25 22:01:47 6/16: https://en.wikipedia.org/wiki/Hamburg
+#> 2021-09-25 22:01:47 7/16: https://en.wikipedia.org/wiki/Hesse
+#> 2021-09-25 22:01:47 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
+#> 2021-09-25 22:01:48 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
+#> 2021-09-25 22:01:48 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
+#> 2021-09-25 22:01:48 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
+#> 2021-09-25 22:01:48 12/16: https://en.wikipedia.org/wiki/Saarland
+#> 2021-09-25 22:01:48 13/16: https://en.wikipedia.org/wiki/Saxony
+#> 2021-09-25 22:01:49 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
+#> 2021-09-25 22:01:49 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
+#> 2021-09-25 22:01:49 16/16: https://en.wikipedia.org/wiki/Thuringia
 #> Finished
 
 head(results)

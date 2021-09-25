@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/m-g-h/scrapurrr/branch/master/graph/badge.svg)](https://codecov.io/gh/m-g-h/scrapurrr?branch=master)
+[![R-CMD-check](https://github.com/m-g-h/scrapurrr/workflows/R-CMD-check/badge.svg)](https://github.com/m-g-h/scrapurrr/actions)
 <!-- badges: end -->
 
 ### Overview
