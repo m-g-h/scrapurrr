@@ -2,26 +2,27 @@
 % Please edit documentation in R/crawler.R
 \name{messagefun}
 \alias{messagefun}
-\title{Prints a progress message to the console as \code{YYYY-MM-DD HH:MM:SS n/N object}}
+\title{Prints a progress message of the form \code{YYYY-MM-DD HH:MM:SS n/N: object}
+to the console}
 \usage{
 messagefun(n, N, object)
 }
 \arguments{
-\item{n}{\code{numeric scalar} number of current object}
+\item{n}{\code{numeric scalar}. Index number of current object}
 
-\item{N}{\code{numeric scalar} total number of objects}
+\item{N}{\code{numeric scalar}. Total number of objects}
 
-\item{object}{\code{character scalar or convertable to character} the object to
+\item{object}{\code{character scalar or convertable to character}. The object to
 print in the tail of the message}
 }
 \value{
-Prints a message to the console
+Prints a message to the console.
 }
 \description{
-Prints a progress message to the console as \code{YYYY-MM-DD HH:MM:SS n/N object}
+Prints a progress message of the form \code{YYYY-MM-DD HH:MM:SS n/N: object}
+to the console
 }
 \examples{
-
 messagefun(1, 1000, "object")
 
 }

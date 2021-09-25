@@ -25,8 +25,8 @@ This package is designed to provide tools for automating repetitive and/or chall
 **Contents:**
 
 - Manual Workflow: Scraping a Single Page
-- Automated Workflow 1: Scraping Multiple Pages with `do_scrape()`
-- Functionality of `do_scrape()`
+- Automated Workflow 1: Scraping Multiple Pages with `map_scrape()`
+- Functionality of `map_scrape()`
 - Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)
 - Overcoming Webscraping Obstacles
 - Dealing with request limits using timing and proxies
@@ -59,7 +59,7 @@ page %>%
 
 ```
 
-## Automated Workflow 1: Scraping Multiple Pages with `do_scrape()`
+## Automated Workflow 1: Scraping Multiple Pages with `map_scrape()`
 
 Usually one needs to scrape multiple pages. E.g. we could be interested in the capital cities of *each* of the 16 German states. The simple webscraping process implemented in this package is descrived in the following sections.
 
@@ -80,7 +80,7 @@ glimpse(state_links)
 
 ### 3. Define an **extraction function** capturing the repetitive webscraping tasks :
 
-The following function captures the complete webscraping task: downloading the `html` and extracting the relevant content. For use in the `do_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
+The following function captures the complete webscraping task: downloading the `html` and extracting the relevant content. For use in the `map_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
 
 Sometimes there are more challenges, like dynamically created content that can't be downloaded via `rvest` or obfuscated data (e.g. e-mails). Ways to deal with these challenges are described in the section **Overcoming Webscraping Obstacles**
 
@@ -109,26 +109,26 @@ get_capitals = function(link){
 ```
 
 ### 3. Apply the function to each link in the list
-For this purpose, `webscraper` offers the `do_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some webscraping-specific utilities. One is that it prints informative status messages to the console, which are useful for long scraping tasks (for further info see the section **Functionality of `do_scrape()`**. Let's use it for our search of capitals:
+For this purpose, `webscraper` offers the `map_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some webscraping-specific utilities. One is that it prints informative status messages to the console, which are useful for long scraping tasks (for further info see the section **Functionality of `map_scrape()`**. Let's use it for our search of capitals:
 ```{r message=TRUE, warning=TRUE}
 library(webscraping)
 # Map the function to all state links and merge the results by row into a dataframe
-results = do_scrape(.func = get_capitals,
+results = map_scrape(.f = get_capitals,
                     state_links)
 
 # Print results
 glimpse(results)
 ```
 
-## Functionality of `do_scrape()`
+## Functionality of `map_scrape()`
 
-`do_scrape()` is the central function of the webscraping workflow in this package. It is basically a wrapper around `pmap_dfr()` from `purrr` and behaves just like it. It also solves some webscraping specific tasks:
+`map_scrape()` is the central function of the webscraping workflow in this package. It is basically a wrapper around `pmap_dfr()` from `purrr` and behaves just like it. It also solves some webscraping specific tasks:
 
 **Status Messages**
 In really large scraping projects it can be useful to see how many objects have been processed, what object is currently being processed and how many there are in total. If the argument `print_status_message` is set to TRUE (default) such a message is printed for every object.
 
 **Error and Timeout handling**
-When scraping a large amount of pages, it can be frustrating to have an error after 70% of the process is completed. This can either happen because of a bug in the extraction function, or if there is an issue with your or the pages internet connection. In these cases, `do_scrape()` does not simply break, but retries to obtain the results. You can specify the amount of retries using the `attempts` argument. For problems with the internet connecion, instead of waiting an immense amount of time, `do_scrape()` fails after the amount of seconds specified using the `timeout` argument.
+When scraping a large amount of pages, it can be frustrating to have an error after 70% of the process is completed. This can either happen because of a bug in the extraction function, or if there is an issue with your or the pages internet connection. In these cases, `map_scrape()` does not simply break, but retries to obtain the results. You can specify the amount of retries using the `attempts` argument. For problems with the internet connecion, instead of waiting an immense amount of time, `map_scrape()` fails after the amount of seconds specified using the `timeout` argument.
 
 If an error or timeout occurs, the output contains the error message and the position at which the error occured in the output.
 
@@ -142,7 +142,7 @@ experimental
 
 ### Easier Scraping Function Output via `return_named_list()`
 
-The extraction functions used in `do_scrape()` are supposed to return a named list. This allows to bind together multiple results row wise. Usually, this is implemented as:
+The extraction functions used in `map_scrape()` are supposed to return a named list. This allows to bind together multiple results row wise. Usually, this is implemented as:
 
 ```{r}
 
@@ -285,10 +285,15 @@ The convenience funtion `view_html()` allows to view what the computer sees. Eit
 
 This is useful for **pretesting**, i.e. for checking what the computer gets (and what it doesn't get). By using `view_html()` you can quickly judge if you need a webdriver like `Selenium` or `PhantomJS` or if simple scraping methods, i.e, `rvest`are sufficient.
 
+### Shuffle NordVPN Servers using `NordVPN_quick_connect()`
+
+If you have NordVPN installed, you can invoke the `Quick Connect` command from R via `system('"Path\\to\\NordVPN.exe" -c')`. This is what `NordVPN_quick_connect()` does if you invoke it. It also checks if a connection was established by trying to `GET` www.google.com and automatically tries a new proxy after 20 seconds.
+
+
 ## Automated Workflow 2: On-Line Download, Off-Line Extraction (for challenging projects)
 Sometimes it is neccessary to separate the download of `html` from the extraction. This can be the case when there is a request limit on the desired page and one can not endlessly trial-and-error until the extraction function works, or when the page is rendered dynamically. A third reason is reproducibility and documentation of the raw `html`. In these cases it makes sense to first download all pages into `html` files on the harddrive and then extract them in a second step.
 
-This process can also be implemented using `do_scrape`:
+This process can also be implemented using `map_scrape`:
 
 ### On-Line: Downloading the html
 
@@ -321,7 +326,7 @@ download_html = function(link, id){
 id = 1:length(state_links)
 
 # Scrape and save html
-results = do_scrape(download_html, state_links, id)
+results = map_scrape(state_links, .f = download_html, id)
 
 # The results in the dataframe
 glimpse(results)
@@ -335,7 +340,7 @@ glimpse(list.files(tmp_folder,
 ### Off-Line: Extracting the Information
 Now that we have the `html` as files on the hard drive, we have all the time in the world to experiment with our extraction function without the need to re-download the `html` each time.
 
-We can actually use the exaxt same function as in the section above **Automated Workflow 1: Scraping Multiple Pages with `do_scrape()`**. The `link` argument now needs to lead to the file on the harddrive.
+We can actually use the exaxt same function as in the section above **Automated Workflow 1: Scraping Multiple Pages with `map_scrape()`**. The `link` argument now needs to lead to the file on the harddrive.
 
 ```{r}
 # Define the extraction function
@@ -365,11 +370,13 @@ files = list.files(tmp_folder,
                    pattern = "html")
 
 # Extraction
-results = do_scrape(get_capitals, 
-                    files)
+results = map_scrape(files,
+                     .f = get_capitals)
 
 # The results in the dataframe
 glimpse(results)
 
 ```
+
+
 

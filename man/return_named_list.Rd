@@ -8,14 +8,12 @@ return_named_list()
 }
 \value{
 \code{named list} of all objects in the function that don't
-start with a dot
+start with a dot.
 }
 \description{
-Makes it easier to return a named list. Recommended us is inside
-an extraction function that is passed to \code{\link{do_scrape}}.
+Makes it easier to return a named list from a function.
 }
 \examples{
-
 # Function that uses return_named_list()
 func <- function(a, b) {
   # objects prefixed with a dot get ignored

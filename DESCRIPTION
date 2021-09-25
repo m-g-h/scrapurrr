@@ -28,5 +28,6 @@ Imports:
     rvest,
     stringr,
     xml2,
-    rstudioapi
+    rstudioapi,
+    httr
 VignetteBuilder: knitr

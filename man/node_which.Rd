@@ -2,25 +2,25 @@
 % Please edit documentation in R/scraping_helpers.R
 \name{node_which}
 \alias{node_which}
-\title{Find the positions of nodes in a nodelist that matche a regex pattern}
+\title{Find the positions of nodes in a \code{xml_nodeset} that match a regex pattern}
 \usage{
 node_which(nodelist, regex, inc = 0)
 }
 \arguments{
-\item{nodelist}{\code{xml_nodeset}, e.g. returned from \code{rvest}s
-\code{link{html_elements}}}
+\item{nodelist}{\code{xml_nodeset}, as e.g. returned from
+\code{\link[rvest]{html_elements}}.}
 
-\item{regex}{\code{string scalar} giving the regex to search for. See the
-stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}}
+\item{regex}{\code{string scalar} giving the regular expression to search for.
+See the stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}}
 
-\item{inc}{\code{numeric scalar} Increment added to the returned index. See
-examples for a usecase.}
+\item{inc}{\code{numeric scalar}. Increment added to the returned index. See
+examples for a use case.}
 }
 \value{
-Returns a \code{numeric scalar or vector}
+Returns a \code{numeric scalar or vector}.
 }
 \description{
-Find the positions of nodes in a nodelist that matche a regex pattern
+Find the positions of nodes in a \code{xml_nodeset} that match a regex pattern
 }
 \examples{
 library(rvest)

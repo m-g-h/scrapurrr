@@ -13,8 +13,9 @@ test_that("return_named_list() works", {
                list("x" = 1,
                     "y" = NA))
 
-  # Should also work within do_scrape()
-  expect_equal(do_scrape(func, 1:3, 1:3,print_status_message = F),
+  # Should also work within map_scrape()
+  expect_equal(map_scrape(1:3, 1:3, .f = func,
+                         print_status_message = F),
                tibble(x = 1:3,
                       y = NA,
                       id = x))

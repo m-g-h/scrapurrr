@@ -1,14 +1,12 @@
 #' Collect all local objects and return them as named list.
 #'
-#' Makes it easier to return a named list. Recommended us is inside
-#' an extraction function that is passed to \code{\link{do_scrape}}.
+#' Makes it easier to return a named list from a function.
 #'
 #' @return \code{named list} of all objects in the function that don't
-#' start with a dot
+#' start with a dot.
 #' @export
 #'
 #' @examples
-#'
 #' # Function that uses return_named_list()
 #' func <- function(a, b) {
 #'   # objects prefixed with a dot get ignored
@@ -35,8 +33,12 @@ return_named_list <- function() {
   list = objs[!(objs %in% args)] %>%
     mget(envir = parent_env)
 
-  # Replace NULL values by NA
-  list[sapply(list, is.null) %>%
+  is_empty = function(x){
+    length(x) == 0 | is.null(x)
+  }
+
+  # Replace empty values by NA
+  list[sapply(list, is_empty) %>%
          which()] = NA
 
   list
@@ -44,16 +46,16 @@ return_named_list <- function() {
 
 }
 
-#' Find the positions of nodes in a nodelist that matche a regex pattern
+#' Find the positions of nodes in a \code{xml_nodeset} that match a regex pattern
 #'
-#' @param nodelist \code{xml_nodeset}, e.g. returned from \code{rvest}s
-#' \code{link{html_elements}}
-#' @param regex \code{string scalar} giving the regex to search for. See the
-#' stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}
-#' @param inc \code{numeric scalar} Increment added to the returned index. See
-#' examples for a usecase.
+#' @param nodelist \code{xml_nodeset}, as e.g. returned from
+#' \code{\link[rvest]{html_elements}}.
+#' @param regex \code{string scalar} giving the regular expression to search for.
+#' See the stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}
+#' @param inc \code{numeric scalar}. Increment added to the returned index. See
+#' examples for a use case.
 #'
-#' @return Returns a \code{numeric scalar or vector}
+#' @return Returns a \code{numeric scalar or vector}.
 #' @export
 #'
 #' @importFrom stringr str_which
@@ -95,7 +97,7 @@ node_which <- function(nodelist, regex, inc = 0) {
   str_which(html_text(nodelist), regex) + inc
 }
 
-#' Find and return the node(s) in a nodelist that matche a regex pattern
+#' Find and return the node(s) in a \code{xml_nodeset} that match a regex pattern
 #'
 #' @inheritParams node_which
 #'
@@ -140,11 +142,11 @@ html_find <- function(nodelist, regex, inc = 0) {
 
 #' Download html and/or display it in the RStudio Viewer / Browser
 #'
-#' @param link \code{string scala} (optional) Link to a webpage. It will be
+#' @param link \code{string scalar}(optional). Link to a webpage. It will be
 #' downloaded via \code{\link[xml2]{read_html}}.
-#' @param html \code{string scalar or html} containing the html to be displayed
+#' @param html \code{string scalar or html} containing the html to be displayed.
 #'
-#' @return Opens the RStudio Viewer and displays the webpage or html
+#' @return Opens the RStudio viewer and displays the webpage or html.
 #' @export
 #'
 #' @importFrom xml2 read_html
@@ -152,7 +154,6 @@ html_find <- function(nodelist, regex, inc = 0) {
 #' @importFrom utils browseURL
 #'
 #' @examples
-#'
 #' # Using link to webpage:
 #' view_html("https://www.google.de")
 #'
@@ -179,4 +180,59 @@ view_html = function(link = NULL, html = NULL){
   # Use RStudio Viewer to access file
   viewer <- getOption("viewer", default = utils::browseURL)
   viewer(htmlFile)
+}
+
+#' Invoke the "Quick Connect" command of NordVPN
+#'
+#' @param nordvpn_exe \code{string scalar} giving the path to the NordVPN.exe.
+#'
+#' @return Invokes the `-c` command of NordVPN
+#' @export
+#'
+#' @importFrom crayon green white
+#' @importFrom httr GET
+#'
+
+NordVPN_quick_connect = function(
+  nordvpn_exe = "C:\\Program Files\\NordVPN\\NordVPN.exe"){
+
+  # System command to connect to new proxy
+  NordVPN_connect = function(){
+    message(green("Executing NordVPN Quick Connect ..."))
+
+    system(paste0('"', nordvpn_exe, '" -c'),
+           wait = T)
+  }
+
+  # GET request to popular page
+  get_testpage = function(){
+    try(httr::GET("https://www.google.com"), silent = T)
+  }
+
+  # First try at connection
+  NordVPN_connect()
+  Sys.sleep(4)
+  testpage = get_testpage()
+
+  # While loop that reconnects until the testpage could be reached
+  start = Sys.time()
+  duration = difftime(Sys.time(), start,
+                      units = "secs")
+
+  while ("try-error" %in% class(testpage)) {
+    Sys.sleep(4)
+    duration = difftime(Sys.time(), start,
+                        units = "secs")
+    message("Waiting on proxy, time elapsed: ",
+            white(round(duration)),
+            " seconds")
+
+    if(duration > 20){
+      NordVPN_connect()
+      start = Sys.time()
+    }
+
+    testpage = get_testpage()
+  }
+  message(green("Connected"))
 }

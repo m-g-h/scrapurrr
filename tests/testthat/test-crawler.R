@@ -33,16 +33,16 @@ test_that("try_and_timeout() works",{
 
   # Expect that it returns the error message
   expect_equal(try_and_timeout(errorfun, attempts = 3,print_status_message = F),
-               list("error" = "Error in func(...) : error message\n"))
+               list("error" = "Error in .f(...) : error message\n"))
 
 })
 
-# do_scrape() -------------------------------------------------------------
+# map_scrape() -------------------------------------------------------------
 
 
-test_that("do_scrape() works",{
+test_that("map_scrape() works",{
 
-  files = list.files("do_scrape_files",
+  files = list.files("test-crawler_files",
                      full.names = T)
 
   # Scraping using a function and a list of files
@@ -56,14 +56,15 @@ test_that("do_scrape() works",{
 
   }
 
-  expect_equal(do_scrape(scrapefun, files, print_status_message = F),
+  expect_equal(map_scrape(files, .f = scrapefun,
+                         print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
                                         "Bayern"),
                               id = 1:3))
 
   # Expect status messages
-  expect_message(do_scrape(scrapefun, files),
+  expect_message(map_scrape(files, .f = scrapefun),
                  regexp = "1/3") %>%
     expect_message(regexp = "2/3") %>%
     expect_message(regexp = "3/3") %>%
@@ -81,7 +82,8 @@ test_that("do_scrape() works",{
 
   }
 
-  expect_equal(do_scrape(scrapefun2, files, 1:3, print_status_message = F),
+  expect_equal(map_scrape(files, 1:3, .f = scrapefun2,
+                         print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
                                         "Bayern"),
@@ -101,7 +103,8 @@ test_that("do_scrape() works",{
 
   }
   # Expect status + error messages
-  expect_message(do_scrape(scrapefun3, c(1, "two", 3), print_status_message = T),
+  expect_message(map_scrape(c(1, "two", 3), .f = scrapefun3,
+                           print_status_message = T),
                  "1/3. 1") %>%
     expect_message("2/3. two") %>%
     expect_message("Retry, attempt 2") %>%
@@ -111,15 +114,16 @@ test_that("do_scrape() works",{
     expect_message("Finished")
 
   # Expect the error message in the output
-  expect_equal(do_scrape(scrapefun3, c(1, "two", 3), print_status_message = F),
+  expect_equal(map_scrape(c(1, "two", 3), .f = scrapefun3,
+                         print_status_message = F),
                tibble::tibble(res = c("1", NA, "3"),
                               id = 1:3,
-                              error = c(NA, "Error in func(...) : error\n" , NA)))
+                              error = c(NA, "Error in .f(...) : error\n" , NA)))
 
 
 })
 
-test_that("do_scrape() works online", {
+test_that("map_scrape() works online", {
   skip_if_offline()
 
   links = list("https://de.wikipedia.org/wiki/Bayern",
@@ -134,7 +138,8 @@ test_that("do_scrape() works online", {
    list("title" = title)
   }
 
-  expect_equal(do_scrape(scrapefun,links, print_status_message = F),
+  expect_equal(map_scrape(links, .f = scrapefun,
+                         print_status_message = F),
                tibble(title = c("Bayern",
                                 "Berlin",
                                 "Brandenburg"),

@@ -2,25 +2,25 @@
 % Please edit documentation in R/scraping_helpers.R
 \name{html_find}
 \alias{html_find}
-\title{Find and return the node(s) in a nodelist that matche a regex pattern}
+\title{Find and return the node(s) in a \code{xml_nodeset} that match a regex pattern}
 \usage{
 html_find(nodelist, regex, inc = 0)
 }
 \arguments{
-\item{nodelist}{\code{xml_nodeset}, e.g. returned from \code{rvest}s
-\code{link{html_elements}}}
+\item{nodelist}{\code{xml_nodeset}, as e.g. returned from
+\code{\link[rvest]{html_elements}}.}
 
-\item{regex}{\code{string scalar} giving the regex to search for. See the
-stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}}
+\item{regex}{\code{string scalar} giving the regular expression to search for.
+See the stringr cheatsheet on \url{https://www.rstudio.com/resources/cheatsheets/}}
 
-\item{inc}{\code{numeric scalar} Increment added to the returned index. See
-examples for a usecase.}
+\item{inc}{\code{numeric scalar}. Increment added to the returned index. See
+examples for a use case.}
 }
 \value{
 Returns a \code{xml_nodeset}
 }
 \description{
-Find and return the node(s) in a nodelist that matche a regex pattern
+Find and return the node(s) in a \code{xml_nodeset} that match a regex pattern
 }
 \examples{
 library(rvest)

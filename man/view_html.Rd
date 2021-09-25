@@ -7,19 +7,18 @@
 view_html(link = NULL, html = NULL)
 }
 \arguments{
-\item{link}{\code{string scala} (optional) Link to a webpage. It will be
+\item{link}{\code{string scalar}(optional). Link to a webpage. It will be
 downloaded via \code{\link[xml2]{read_html}}.}
 
-\item{html}{\code{string scalar or html} containing the html to be displayed}
+\item{html}{\code{string scalar or html} containing the html to be displayed.}
 }
 \value{
-Opens the RStudio Viewer and displays the webpage or html
+Opens the RStudio viewer and displays the webpage or html.
 }
 \description{
 Download html and/or display it in the RStudio Viewer / Browser
 }
 \examples{
-
 # Using link to webpage:
 view_html("https://www.google.de")
 

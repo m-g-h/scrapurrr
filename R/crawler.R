@@ -1,19 +1,19 @@
 
-#' Prints a progress message to the console as \code{YYYY-MM-DD HH:MM:SS n/N object}
+#' Prints a progress message of the form \code{YYYY-MM-DD HH:MM:SS n/N: object}
+#' to the console
 #'
-#' @param n \code{numeric scalar} number of current object
-#' @param N \code{numeric scalar} total number of objects
-#' @param object \code{character scalar or convertable to character} the object to
+#' @param n \code{numeric scalar}. Index number of current object
+#' @param N \code{numeric scalar}. Total number of objects
+#' @param object \code{character scalar or convertable to character}. The object to
 #' print in the tail of the message
 #'
-#' @return Prints a message to the console
+#' @return Prints a message to the console.
 #' @export
 #'
 #' @importFrom cli console_width
 #' @importFrom crayon blue white
 #'
 #' @examples
-#'
 #' messagefun(1, 1000, "object")
 #'
 messagefun = function(n, N, object){
@@ -35,24 +35,26 @@ messagefun = function(n, N, object){
   )
 }
 
-#' Executes a function and gives a try-error if it fails or times out
+#' Tries and retries to execute the given function if it throws an error or times
+#' out.
 #'
-#' @param func \code{function} Function to execute
-#' @param timeout \code{numeric scalar} Seconds until function is considered to
-#' be timed out
-#' @param attempts \code{numeric scalar} Number of attempts to try the function
-#' @param ... \code{further arguments to function}
-#' @param print_status_message \code{Logical scalar} indicating whether status
-#' messages should be printed
+#' @param .f \code{function}. Function to execute.
+#' @param timeout \code{numeric scalar}. Seconds until function is considered to
+#' be timed out.
+#' @param attempts \code{numeric scalar}. Number of attempts to retry execution
+#' of \code{.f}.
+#' @param ... Additional arguments passed on to the mapped function.
+#' @param print_status_message \code{Logical scalar}, indicating whether status
+#' messages should be printed.
 #'
-#' @return Returns either a \code{try-error} or the function result
+#' @return Returns either a \code{character scalar} error message or the
+#' function result.
 #' @export
 #'
 #' @importFrom R.utils withTimeout
 #' @importFrom crayon green red
 #'
 #' @examples
-#'
 #' # Works
 #' try_and_timeout(mean, 1:100)
 #'
@@ -62,7 +64,7 @@ messagefun = function(n, N, object){
 #' # Returns error because of wrong argument
 #' try_and_timeout(mean, "error")
 
-try_and_timeout <- function(func, ...,
+try_and_timeout <- function(.f, ...,
                             timeout = 15,
                             attempts = 3,
                             print_status_message = T){
@@ -80,7 +82,7 @@ try_and_timeout <- function(func, ...,
     # Try attempt
     res <- try({
       withTimeout({
-        func(...)
+        .f(...)
       },timeout = timeout,
       onTimeout = "silent")
     },silent = T)
@@ -100,15 +102,21 @@ try_and_timeout <- function(func, ...,
   }# End of while loop
 }
 
-#' Scrape content of objects using a specified function. Supports timeouts and
-#' error handling.
+#' Apply a function to each element in a list or atomic vector. Specialised for
+#' webscraping
 #'
-#' @param .func \code{function} A function that returns a list with named
-#' entries
-#' @param ... arguments to the function, e.g. a list of links to scrape from
+#' This function automatically prints a status message for each object passed to
+#' \code{.f} using \code{\link{messagefun}}
+#'
+#' It also uses \code{\link{try_and_timeout}} internally to capture errors or
+#' timeouts. Instead of stopping on an error it continues to scrape. In such
+#' cases, the error message is returned as \code{character} in the output.
+#'
+#' @param .f \code{function}. A function that returns a named list.
 #' @inheritParams try_and_timeout
 #'
-#' @return Returns a \code{tibble}
+#' @return Returns a \code{tibble} with the scraping results. Includes a column
+#'  with a numeric index \code{n}.
 #' @export
 #'
 #' @importFrom crayon green
@@ -116,7 +124,6 @@ try_and_timeout <- function(func, ...,
 #' @import dplyr
 #'
 #' @examples
-#'
 #' library(magrittr)
 #' library(rvest)
 #' library(webscraping)
@@ -133,11 +140,11 @@ try_and_timeout <- function(func, ...,
 #'     html_text()
 #'  list("title" = title)
 #' }
-#'
-#' do_scrape(scrapefun,links)
+#' links %>%
+#'   map_scrape(.f = scrapefun)
 
-do_scrape = function(.func,
-                     ...,
+map_scrape = function(...,
+                     .f,
                      timeout = 15,
                      attempts = 3,
                      print_status_message = T){
@@ -150,14 +157,14 @@ do_scrape = function(.func,
       messagefun(n, N, inner_dots[[1]])
     }
     # Try to evaluate the function with timeout
-    res <- try_and_timeout(.func, ...,
+    res <- try_and_timeout(.f, ...,
                            timeout = timeout,
                            attempts = attempts,
                            print_status_message = print_status_message)
 
     # Throw error if no named list is returned
     if(!is.list(res) & is.null(names(res))){
-      funcname = deparse(substitute(.func))
+      funcname = deparse(substitute(.f))
       stop(paste0("The scraping function`",
                   funcname,
                   "`did not return a named list."))

@@ -2,37 +2,34 @@
 % Please edit documentation in R/crawler.R
 \name{try_and_timeout}
 \alias{try_and_timeout}
-\title{Executes a function and gives a try-error if it fails or times out}
+\title{Tries and retries to execute the given function if it throws an error or times
+out.}
 \usage{
-try_and_timeout(
-  func,
-  ...,
-  timeout = 15,
-  attempts = 3,
-  print_status_message = T
-)
+try_and_timeout(.f, ..., timeout = 15, attempts = 3, print_status_message = T)
 }
 \arguments{
-\item{func}{\code{function} Function to execute}
+\item{.f}{\code{function}. Function to execute.}
 
-\item{...}{\code{further arguments to function}}
+\item{...}{Additional arguments passed on to the mapped function.}
 
-\item{timeout}{\code{numeric scalar} Seconds until function is considered to
-be timed out}
+\item{timeout}{\code{numeric scalar}. Seconds until function is considered to
+be timed out.}
 
-\item{attempts}{\code{numeric scalar} Number of attempts to try the function}
+\item{attempts}{\code{numeric scalar}. Number of attempts to retry execution
+of \code{.f}.}
 
-\item{print_status_message}{\code{Logical scalar} indicating whether status
-messages should be printed}
+\item{print_status_message}{\code{Logical scalar}, indicating whether status
+messages should be printed.}
 }
 \value{
-Returns either a \code{try-error} or the function result
+Returns either a \code{character scalar} error message or the
+function result.
 }
 \description{
-Executes a function and gives a try-error if it fails or times out
+Tries and retries to execute the given function if it throws an error or times
+out.
 }
 \examples{
-
 # Works
 try_and_timeout(mean, 1:100)
 
