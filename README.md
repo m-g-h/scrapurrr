@@ -15,7 +15,7 @@ This package offers a functional programming style framework for
 webscraping and useful tools and tutorials to overcome common
 webscraping challenges. Check out the vignettes for webscraping
 workflows and infos on how to write the webscraping logic for specific
-webscraping challenges.
+webscraping challenges
 
 Install the development version via
 
@@ -119,22 +119,22 @@ And then we can use `map_scrape()` to execute the task:
 ``` r
 results = map_scrape(state_links,
                     .f = get_state_capital)
-#> 2021-09-25 21:40:12 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
-#> 2021-09-25 21:40:12 2/16: https://en.wikipedia.org/wiki/Bavaria
-#> 2021-09-25 21:40:13 3/16: https://en.wikipedia.org/wiki/Berlin
-#> 2021-09-25 21:40:13 4/16: https://en.wikipedia.org/wiki/Brandenburg
-#> 2021-09-25 21:40:13 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
-#> 2021-09-25 21:40:13 6/16: https://en.wikipedia.org/wiki/Hamburg
-#> 2021-09-25 21:40:14 7/16: https://en.wikipedia.org/wiki/Hesse
-#> 2021-09-25 21:40:14 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
-#> 2021-09-25 21:40:14 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
-#> 2021-09-25 21:40:14 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
-#> 2021-09-25 21:40:15 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
-#> 2021-09-25 21:40:15 12/16: https://en.wikipedia.org/wiki/Saarland
-#> 2021-09-25 21:40:15 13/16: https://en.wikipedia.org/wiki/Saxony
-#> 2021-09-25 21:40:17 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
-#> 2021-09-25 21:40:18 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
-#> 2021-09-25 21:40:18 16/16: https://en.wikipedia.org/wiki/Thuringia
+#> 2021-09-25 21:47:11 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
+#> 2021-09-25 21:47:12 2/16: https://en.wikipedia.org/wiki/Bavaria
+#> 2021-09-25 21:47:12 3/16: https://en.wikipedia.org/wiki/Berlin
+#> 2021-09-25 21:47:12 4/16: https://en.wikipedia.org/wiki/Brandenburg
+#> 2021-09-25 21:47:12 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
+#> 2021-09-25 21:47:13 6/16: https://en.wikipedia.org/wiki/Hamburg
+#> 2021-09-25 21:47:13 7/16: https://en.wikipedia.org/wiki/Hesse
+#> 2021-09-25 21:47:13 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
+#> 2021-09-25 21:47:13 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
+#> 2021-09-25 21:47:14 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
+#> 2021-09-25 21:47:14 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
+#> 2021-09-25 21:47:14 12/16: https://en.wikipedia.org/wiki/Saarland
+#> 2021-09-25 21:47:14 13/16: https://en.wikipedia.org/wiki/Saxony
+#> 2021-09-25 21:47:14 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
+#> 2021-09-25 21:47:15 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
+#> 2021-09-25 21:47:16 16/16: https://en.wikipedia.org/wiki/Thuringia
 #> Finished
 
 head(results)
