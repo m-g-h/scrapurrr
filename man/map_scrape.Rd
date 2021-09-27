@@ -5,7 +5,15 @@
 \title{Apply a function to each element in a list or atomic vector. Specialised for
 scrapurrr}
 \usage{
-map_scrape(..., .f, timeout = 15, attempts = 3, print_status_message = T)
+map_scrape(
+  ...,
+  .f,
+  timeout = 15,
+  attempts = 3,
+  print_status_message = T,
+  parallel_workers = 0,
+  parallel_strategy = NULL
+)
 }
 \arguments{
 \item{...}{Additional arguments passed on to the mapped function.}
@@ -20,6 +28,12 @@ of \code{.f}.}
 
 \item{print_status_message}{\code{Logical scalar}, indicating whether status
 messages should be printed.}
+
+\item{parallel_workers}{\code{numeric scalar} giving the number of parallel
+workers for parallelisation}
+
+\item{parallel_strategy}{\code{string scalar} giving the strategy for parallelisation.
+Also see \code{\link[future]{plan}}}
 }
 \value{
 Returns a \code{tibble} with the scraping results. Includes a column

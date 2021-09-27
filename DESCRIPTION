@@ -35,5 +35,7 @@ Imports:
     stringr,
     xml2,
     rstudioapi,
-    httr
+    httr,
+    furrr,
+    future
 VignetteBuilder: knitr  

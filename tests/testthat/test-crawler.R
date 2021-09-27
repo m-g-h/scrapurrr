@@ -56,12 +56,31 @@ test_that("map_scrape() works",{
 
   }
 
+  # Normal processing
   expect_equal(map_scrape(files, .f = scrapefun,
-                         print_status_message = F),
+                          print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
                                         "Bayern"),
                               id = 1:3))
+
+  # Parallel processing
+  if("Windows" %in% Sys.info()){
+    strat = "multisession"
+  } else {
+    strat = "multiprocess"
+  }
+
+  expect_equal(map_scrape(files, .f = scrapefun,
+                          print_status_message = F,
+                          parallel_workers = 2,
+                          parallel_strategy = strat),
+               tibble::tibble(title = c("Berlin",
+                                        "Baden-Württemberg",
+                                        "Bayern"),
+                              id = 1:3)
+  )
+
 
   # Expect status messages
   expect_message(map_scrape(files, .f = scrapefun),
@@ -83,7 +102,7 @@ test_that("map_scrape() works",{
   }
 
   expect_equal(map_scrape(files, 1:3, .f = scrapefun2,
-                         print_status_message = F),
+                          print_status_message = F),
                tibble::tibble(title = c("Berlin",
                                         "Baden-Württemberg",
                                         "Bayern"),
@@ -104,7 +123,7 @@ test_that("map_scrape() works",{
   }
   # Expect status + error messages
   expect_message(map_scrape(c(1, "two", 3), .f = scrapefun3,
-                           print_status_message = T),
+                            print_status_message = T),
                  "1/3. 1") %>%
     expect_message("2/3. two") %>%
     expect_message("Retry, attempt 2") %>%
@@ -115,7 +134,7 @@ test_that("map_scrape() works",{
 
   # Expect the error message in the output
   expect_equal(map_scrape(c(1, "two", 3), .f = scrapefun3,
-                         print_status_message = F),
+                          print_status_message = F),
                tibble::tibble(res = c("1", NA, "3"),
                               id = 1:3,
                               error = c(NA, "Error in .f(...) : error\n" , NA)))
@@ -135,11 +154,11 @@ test_that("map_scrape() works online", {
     title = rvest::read_html(link) %>%
       rvest::html_elements("h1") %>%
       rvest::html_text()
-   list("title" = title)
+    list("title" = title)
   }
 
   expect_equal(map_scrape(links, .f = scrapefun,
-                         print_status_message = F),
+                          print_status_message = F),
                tibble(title = c("Bayern",
                                 "Berlin",
                                 "Brandenburg"),

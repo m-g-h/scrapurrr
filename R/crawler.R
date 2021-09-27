@@ -114,6 +114,10 @@ try_and_timeout <- function(.f, ...,
 #'
 #' @param .f \code{function}. A function that returns a named list.
 #' @inheritParams try_and_timeout
+#' @param parallel_workers \code{numeric scalar} giving the number of parallel
+#' workers for parallelisation
+#' @param parallel_strategy \code{string scalar} giving the strategy for parallelisation.
+#' Also see \code{\link[future]{plan}}
 #'
 #' @return Returns a \code{tibble} with the scraping results. Includes a column
 #'  with a numeric index \code{n}.
@@ -122,6 +126,8 @@ try_and_timeout <- function(.f, ...,
 #' @importFrom crayon green
 #' @importFrom purrr pmap_dfr
 #' @import dplyr
+#' @importFrom future plan
+#' @importFrom furrr future_pmap_dfr furrr_options
 #'
 #' @examples
 #' library(magrittr)
@@ -147,7 +153,9 @@ map_scrape = function(...,
                      .f,
                      timeout = 15,
                      attempts = 3,
-                     print_status_message = T){
+                     print_status_message = T,
+                     parallel_workers = 0,
+                     parallel_strategy = NULL){
 
   # Function that is used inside map to loop over all objects in ...
   mapfun <- function(..., n, N){
@@ -182,6 +190,24 @@ map_scrape = function(...,
   dots = list(...)
   N = length(dots[[1]])
   dots$n = 1:length(dots[[1]])
+
+  # Parallel mode
+  if(parallel_workers > 0){
+
+    # No status messages in parallel mode
+    print_status_message = FALSE
+
+    # Setup parallel computing
+    plan(parallel_strategy, workers = parallel_workers)
+
+    # Evaluation
+    future_pmap_dfr(.l = dots,
+                    mapfun,
+                    N = N,
+                    .options = furrr_options(seed = 123))
+
+
+  }
 
   # Evaluate all objects
   pmap_dfr(.l = dots,
