@@ -40,13 +40,23 @@ Returns a \code{tibble} with the scraping results. Includes a column
 with a numeric index \code{n}.
 }
 \description{
-This function automatically prints a status message for each object passed to
-\code{.f} using \code{\link{messagefun}}
+This function is a wrapper around \code{\link[purrr]{pmap_dfr}} and works
+similarly: provide a list of links or html files you want to scrape and a
+function containing the scraping logic. \code{map_scrape()} then applies
+the function to each element in the list and returns a \code{tibble}.
 }
 \details{
+This function automatically prints a status message for each object passed to
+\code{.f} using \code{\link{messagefun}}, giving you status updates for long
+jobs.
+
 It also uses \code{\link{try_and_timeout}} internally to capture errors or
 timeouts. Instead of stopping on an error it continues to scrape. In such
 cases, the error message is returned as \code{character} in the output.
+
+\strong{Parallelisation} is implemented via \code{\link[furrr]{future_pmap_dfr}}
+To scrape in parallel, simply provide the arguments \code{parallel_workers}
+and \code{parallel_strategy}
 }
 \examples{
 library(magrittr)

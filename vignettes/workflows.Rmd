@@ -210,3 +210,7 @@ results = map_scrape(state_files,
 head(results)
 
 ```
+
+## Parallelisation
+
+Parallelisation is implemented via `furrr`. To scrape in parallel, simply provide the arguments `parallel_workers` and `parallel_strategy` to `map_scrape()`
