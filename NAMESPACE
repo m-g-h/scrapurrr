@@ -2,6 +2,7 @@
 
 export("%>%")
 export(NordVPN_quick_connect)
+export(add_sleep_time)
 export(html_find)
 export(map_scrape)
 export(messagefun)
