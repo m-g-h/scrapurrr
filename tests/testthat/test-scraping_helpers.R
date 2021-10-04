@@ -1,7 +1,7 @@
 test_that("return_named_list() works", {
 
   # Function that uses return_named_list()
-  func <- function(a, b) {
+  func <- function(a, b=1) {
     # objects prefixed with a dot get ignored
     .not_include = b
     x = a
@@ -14,11 +14,9 @@ test_that("return_named_list() works", {
                     "y" = NA))
 
   # Should also work within map_scrape()
-  expect_equal(map_scrape(1:3, 1:3, .f = func,
-                         print_status_message = F),
+  expect_equal(map_scrape_dfr(x = 1:3, scrapefun = func),
                tibble(x = 1:3,
-                      y = NA,
-                      id = x))
+                      y = NA))
 
 })
 

@@ -18,16 +18,25 @@ knitr::opts_chunk$set(
 library(scrapurrr)
 ```
 
-This vignette explains webscraping workflows using `map_scrape()`:
+This vignette explains webscraping workflows using the `map_scrape()` family of functions:
 ![](automation_small.svg)
 
 The basic `scrapurr` workflow is:
 
 1. Define a `list` of links or html files to scrape
 2. Write a `scrapefun()` that contains the webscraping logic
-3. Apply the `scrapefun()` to the list using `map_scrape()`
+3. Apply the `scrapefun()` to the list using `map_scrape_dfr()`
 
 For more involved webscraping projects, we can split the on-line gathering of page contents from the off-line extraction and parsing (see below). This is useful when there are obstacles to content gathering and we can not trial-and-error indefenitly.
+
+## The `map_scrape...` family of functions
+
+The webscraping workflow in thsi package build upon the `purrr` package and therefore provides its utilities in similarly named functions:
+
+- `map_scrape()` For returning lists
+- `map_scrape_dfr()` For returning a dataframe merged rowwise
+
+There are also versions using two inputs which are prefixed with `map2` instead of `map`, as well as parallelised versions using the `furrr` package which are prefixed with `future_`.
 
 ## Basic Workflow: Scraping German state capitals from Wikipedia
 
@@ -84,7 +93,7 @@ head(state_links)
 
 #### 2. Define an **extraction function** capturing the repetitive webscraping tasks :
 
-The following function captures the complete webscraping logic: downloading the page `html` and extracting the relevant content. For use in the `map_scrape()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe.
+The following function captures the complete webscraping logic: downloading the page `html` and extracting the relevant content. For use in the `map_scrape_dfr()` function provided in this package one thing is important: that it returns a *named list*. This allows to present the output as a dataframe. 
 
 ```{r}
 # Define the extraction function
@@ -112,12 +121,12 @@ get_capitals = function(link){
 Further information on how to write a `scrapefun()` and how to use `return_named_list()` is given in `vignette("scrapefuns_and_helpers")`.
 
 #### 3. Apply the function to each link in the list
-For this purpose weu use the `map_scrape()` function. It is basically a wrapper around `pmap_dfr()` from `purrr` that provides some webscraping-specific utilities. Let's use it for our search of capitals:
+For this purpose we use the `map_scrape_dfr()` function. It is basically a wrapper around `map_dfr()` from `purrr` that provides some webscraping-specific utilities. Let's use it for our search of capitals:
 ```{r message=TRUE, warning=TRUE}
 library(scrapurrr)
 # Map the function to all state links and merge the results by row into a dataframe
-results = map_scrape(.f = get_capitals,
-                    state_links)
+results = map_scrape_dfr(state_links,
+                         get_capitals)
 
 # Print results
 head(results)
@@ -126,7 +135,7 @@ head(results)
 ## Splitted Workflow    : On-Line Download, Off-Line Extraction (for more involved projects)
 Sometimes it is necessary to separate the download of `html` from the extraction. This can be the case when there is a request limit on the desired page and one can not endlessly trial-and-error until the extraction function works, or when the page is rendered dynamically. A third reason is reproducibility and documentation of the raw `html`. In these cases it makes sense to first download all pages into `html` files on the harddrive and then extract them in a second step.
 
-This processes can also be implemented using `map_scrape`:
+This processes can also be implemented using `map_scrape_dfr`:
 
 ### On-Line: Downloading the html
 
@@ -159,14 +168,15 @@ download_html = function(link, id){
 id = 1:length(state_links)
 
 # Scrape and save html
-results = map_scrape(state_links, .f = download_html, id)
+results = map2_scrape_dfr(state_links, id,
+                          download_html)
 
 # The results in the dataframe
 head(results)
 
 # The files on the harddrive
 head(list.files(tmp_folder,
-                   pattern = "html"))
+                pattern = "html"))
 
 ```
 
@@ -199,18 +209,15 @@ get_capitals = function(file){
 
 # The files on the harddrive
 state_files = list.files(tmp_folder,
-                   full.names = T,
-                   pattern = "html")
+                         full.names = T,
+                         pattern = "html")
 
 # Extraction
-results = map_scrape(state_files,
-                     .f = get_capitals)
+results = map_scrape_dfr(state_files,
+                         get_capitals)
 
 # The results in the dataframe
 head(results)
 
 ```
 
-## Parallelisation
-
-Parallelisation is implemented via `furrr`. To scrape in parallel, simply provide the arguments `parallel_workers` and `parallel_strategy` to `map_scrape()`

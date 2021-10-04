@@ -42,6 +42,8 @@ specific webscraping task:
 -   Use `V8` to execute `javascript`, e.g. to de-obfusciate emails.
 -   Return output via `return_named_list()` conveniently as named list
 
+See `vignette("scrapefuns_and_helpers")` for more info.
+
 ### Automate repetitive scraping tasks
 
 ![](vignettes/automation.svg)
@@ -52,6 +54,8 @@ Step 2: define a flexible `scrapefun()` taylor-made to the specific
 `scrapurrr` challenge at hand
 
 Step 3: use `map_scrape()` to webscrape the entire list.
+
+See `vignette("workflows")` for more info.
 
 ## Example Workflow
 
@@ -115,37 +119,20 @@ get_state_capital = function(link){
 }
 ```
 
-And then we can use `map_scrape()` to execute the task:
+And then we can use `map_scrape_dfr()` to execute the task:
 
 ``` r
-results = map_scrape(state_links,
-                    .f = get_state_capital)
-#> 2021-09-25 22:01:46 1/16: https://en.wikipedia.org/wiki/Baden-W%C3%BCrttemberg
-#> 2021-09-25 22:01:46 2/16: https://en.wikipedia.org/wiki/Bavaria
-#> 2021-09-25 22:01:46 3/16: https://en.wikipedia.org/wiki/Berlin
-#> 2021-09-25 22:01:46 4/16: https://en.wikipedia.org/wiki/Brandenburg
-#> 2021-09-25 22:01:47 5/16: https://en.wikipedia.org/wiki/Bremen_(state)
-#> 2021-09-25 22:01:47 6/16: https://en.wikipedia.org/wiki/Hamburg
-#> 2021-09-25 22:01:47 7/16: https://en.wikipedia.org/wiki/Hesse
-#> 2021-09-25 22:01:47 8/16: https://en.wikipedia.org/wiki/Lower_Saxony
-#> 2021-09-25 22:01:48 9/16: https://en.wikipedia.org/wiki/Mecklenburg-Western_Pomera
-#> 2021-09-25 22:01:48 10/16: https://en.wikipedia.org/wiki/North_Rhine-Westphalia
-#> 2021-09-25 22:01:48 11/16: https://en.wikipedia.org/wiki/Rhineland-Palatinate
-#> 2021-09-25 22:01:48 12/16: https://en.wikipedia.org/wiki/Saarland
-#> 2021-09-25 22:01:48 13/16: https://en.wikipedia.org/wiki/Saxony
-#> 2021-09-25 22:01:49 14/16: https://en.wikipedia.org/wiki/Saxony-Anhalt
-#> 2021-09-25 22:01:49 15/16: https://en.wikipedia.org/wiki/Schleswig-Holstein
-#> 2021-09-25 22:01:49 16/16: https://en.wikipedia.org/wiki/Thuringia
-#> Finished
+results = map_scrape_dfr(state_links,
+                         get_state_capital)
 
 head(results)
-#> # A tibble: 6 x 3
-#>   Capital                              State                id
-#>   <chr>                                <chr>             <int>
-#> 1 Stuttgart                            Baden-Württemberg     1
-#> 2 Munich                               Bavaria               2
-#> 3 Capital city, state and municipality Berlin                3
-#> 4 Potsdam                              Brandenburg           4
-#> 5 Bremen                               Bremen (state)        5
-#> 6 <NA>                                 Hamburg               6
+#> # A tibble: 6 x 2
+#>   Capital                              State            
+#>   <chr>                                <chr>            
+#> 1 Stuttgart                            Baden-Württemberg
+#> 2 Munich                               Bavaria          
+#> 3 Capital city, state and municipality Berlin           
+#> 4 Potsdam                              Brandenburg      
+#> 5 Bremen                               Bremen (state)   
+#> 6 <NA>                                 Hamburg
 ```

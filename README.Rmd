@@ -40,7 +40,9 @@ Write a taylor-made `scrapefun()` that solves the challenges of your specific we
   - Use a VPN to rotate proxies (currently NordVPN via `NordVPN_quick_connect()`)
   - Use `V8` to execute `javascript`, e.g. to de-obfusciate emails.
   - Return output via `return_named_list()` conveniently as named list
-  
+
+See `vignette("scrapefuns_and_helpers")` for more info.
+
 ### Automate repetitive scraping tasks
 
 ![](vignettes/automation.svg)
@@ -50,6 +52,8 @@ Step 1: define the list of `url`s or `html` files you want to scrape
 Step 2: define a flexible `scrapefun()` taylor-made to the specific `scrapurrr` challenge at hand
 
 Step 3: use `map_scrape()` to webscrape the entire list.
+
+See `vignette("workflows")` for more info.
 
 ## Example Workflow
 
@@ -99,11 +103,11 @@ get_state_capital = function(link){
 }
 ```
 
-And then we can use `map_scrape()` to execute the task:
+And then we can use `map_scrape_dfr()` to execute the task:
 ```{r}
 
-results = map_scrape(state_links,
-                    .f = get_state_capital)
+results = map_scrape_dfr(state_links,
+                         get_state_capital)
 
 head(results)
 
