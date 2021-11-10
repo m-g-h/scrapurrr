@@ -14,9 +14,9 @@ test_that("return_named_list() works", {
                     "y" = NA))
 
   # Should also work within map_scrape()
-  expect_equal(map_scrape_dfr(x = 1:3, scrapefun = func),
-               tibble(x = 1:3,
-                      y = NA))
+  expect_equal(scrapurrr(1:3, scrapefun = func, map_fun = purrr::map_dfr),
+               tibble::tibble(x = 1:3,
+                              y = NA))
 
 })
 

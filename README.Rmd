@@ -51,7 +51,7 @@ Step 1: define the list of `url`s or `html` files you want to scrape
 
 Step 2: define a flexible `scrapefun()` taylor-made to the specific `scrapurrr` challenge at hand
 
-Step 3: use `map_scrape()` to webscrape the entire list.
+Step 3: use `scrapurrr()` to webscrape the entire list.
 
 See `vignette("workflows")` for more info.
 
@@ -103,14 +103,22 @@ get_state_capital = function(link){
 }
 ```
 
-And then we can use `map_scrape_dfr()` to execute the task:
+And then we can use `scrapurrr()` and `purrr::map_dfr` to execute the task:
 ```{r}
 
-results = map_scrape_dfr(state_links,
-                         get_state_capital)
+results = scrapurrr(state_links,
+                    scrapefun = get_state_capital,
+                    map_fun = purrr::map_dfr)
 
 head(results)
 
 ```
+
+# Further Information and Advanced `scrapefun()` features
+See the vignettes for further information:
+
+- `vignette("workflows")` for tutorials on automating common webscraping tasks
+- `vignette("scrapefuns_and_helpers")` for features to implement in your `scrapefun()`, e.g. javascript execution
+
 
 

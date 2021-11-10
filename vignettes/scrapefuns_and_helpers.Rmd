@@ -26,7 +26,7 @@ This vignette explains the features you can put into a `scrapefun()` to solve yo
 
 ### Capturing `scrapefun()` output via `return_named_list()`
 
-The extraction functions used in `map_scrape()` are supposed to return a named list. This allows to bind together multiple results row wise. Usually, this is implemented as:
+If you use `purrr::map_dfr()` and related mapping functions in `scrapurrr()`, your `scrapefun()` is supposed to return a named list. This allows to bind together multiple results row wise. Usually, this is implemented as:
 
 ```{r message=FALSE, warning=FALSE}
 

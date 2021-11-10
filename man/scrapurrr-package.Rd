@@ -2,8 +2,8 @@
 % Please edit documentation in R/scrapurrr-package.R
 \docType{package}
 \name{scrapurrr-package}
-\alias{scrapurrr}
 \alias{scrapurrr-package}
+\alias{_PACKAGE}
 \title{scrapurrr: Functional Programming Style Webscraping à la purrr}
 \description{
 This package offers a functional programming style framework for 
