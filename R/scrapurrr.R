@@ -56,29 +56,27 @@ with_progress = function(.function, pb){
 make_function_safe_slow_insistent <- function(.function,
                                               delay = 0,
                                               attempts = 3) {
-  ret = .function
 
-  # Add delay if specified
-  if(delay > 0){
-    ret = .function %>%
-      slowly(rate = rate_delay(delay))
-  }
-  #Add retrying if specified
-  if(attempts > 0){
-    ret = .function%>%
-      insistently(rate = rate_backoff(pause_base = delay,
-                                      pause_cap = delay,
-                                      pause_min = delay,
-                                      max_times = attempts))
-
-  }
   # Return function
-  ret %>%
+  .function %>%
+    ifelse(delay > 0,
+           slowly(., rate = rate_delay(delay)),
+           .) %>%
+    ifelse(attempts > 0,
+           insistently(., rate = rate_backoff(pause_base = delay,
+                                           pause_cap = delay,
+                                           pause_min = delay,
+                                           max_times = attempts)),
+           .) %>%
     safely() %>%
     return_result_or_message()
 
 }
 
+scfun = function(a){
+  print(a)
+  as.numeric(a)
+}
 
 #' Scrape a list of links or html files using a scrapefun
 #'
